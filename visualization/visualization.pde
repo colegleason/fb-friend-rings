@@ -1,3 +1,5 @@
+import org.json.*;
+
 PImage img, maskImg;
 
 String username = "coleagleason";
@@ -42,10 +44,10 @@ void draw() {
   fill(100, 100, 100, 255);
   textSize(38);
   text("Messages: " + curr + "/" + messages.size(), width / 2 + 700, height / 2 + 700);
-
 }
 
 void drawUser(int imgSize) {
+    tint(255,255);
   image(img, width/2 - imgSize/2, height/2 - imgSize/2);
   stroke(255);
   strokeWeight(7);
@@ -66,9 +68,9 @@ void drawFriendRings(int ra, int rb, int rc) {
   fill(100, 100, 100, 255);
   textSize(32);
   textAlign(CENTER);
-  text("every day", width / 2, height / 2 + ra - 25);
-  text("once a week", width / 2, height / 2 + rb - 25);
-  text("once a month", width / 2, height / 2 + rc - 25);
+  text("close friends", width / 2, height / 2 + ra - 25);
+  text("friendly", width / 2, height / 2 + rb - 25);
+  text("barely talk", width / 2, height / 2 + rc - 25);
 }
 
 void drawNodes(float r, int curr) {
@@ -78,6 +80,7 @@ void drawNodes(float r, int curr) {
   Iterator i = friends.entrySet().iterator();
   while(i.hasNext()) {
     Node node = (Node) ((Map.Entry) i.next()).getValue();
+    node.update(curr);
     node.draw(10, curr);
   }
 }
