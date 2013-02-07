@@ -60,6 +60,12 @@ void draw() {
   text(formatter.format(date), width / 2 + 700, height / 2 + 600);
   int percent = (int)(100*float(curr)/messages.size());
   text("Messages: " + curr + "/" + messages.size() + " ("+ percent + "%)", width / 2 + 700, height / 2 + 700);
+  textAlign(RIGHT);
+  int fSize = 72;
+  textSize(fSize);
+  text("facebook", 250, -300);
+  text("friend", 250, -300 + fSize);
+  text("rings", 250, -300 + 2*fSize);
 }
 
 void drawUser(int imgSize) {
@@ -83,9 +89,6 @@ void drawFriendRings(int ra, int rb, int rc) {
   fill(100, 100, 100, 255);
   textSize(32);
   textAlign(CENTER);
-  text("close friends", width / 2, height / 2 + ra - 25);
-  text("friendly", width / 2, height / 2 + rb - 25);
-  text("barely talk", width / 2, height / 2 + rc - 25);
 }
 
 void drawNodes(float r, HashMap<String, Integer> mCounts) {
