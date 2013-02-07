@@ -22,6 +22,7 @@ public class Node {
     ellipse(x, y, d, d);
     
     // pulse
+    if (pulse > 0) {
     stroke(255, 140, 0);
     fill(0,0);
     int weight = 3*Math.max(0, pulse);
@@ -32,9 +33,10 @@ public class Node {
       strokeWeight(weight);
     }
     ellipse(x, y, d + weight, d + weight);
+    }
     
     // popup
-    
+    if (popup_transparency > 0) {
     fill(255, popup_transparency);
     noStroke();
     rect(x, y, Math.max(20*id.length(),270), 100);
@@ -43,6 +45,7 @@ public class Node {
     textAlign(LEFT);
     text(id, x + 10, y + 40);
     text("messages: "+ messages, x + 10, y + 70);
+    }
   }
   
   public void sentMessage(int curr) {

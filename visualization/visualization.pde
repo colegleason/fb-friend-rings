@@ -1,4 +1,6 @@
 import org.json.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 PImage img, maskImg;
 
@@ -11,9 +13,7 @@ HashMap<String, visualization.Node> friends;
 HashMap<String, Integer> mCounts;
 ArrayList<Message> messages;
 
-HScrollbar slider;
-int sliderWidth = 1800;
-float sliderX = -200.0;
+Node max_author = null;
 int curr = 0;
 
 void setup() {
@@ -21,7 +21,6 @@ void setup() {
   messages = new ArrayList<Message>();
   formatter = new SimpleDateFormat("MMMM yyyy");
   loadMessages();
-  slider = new HScrollbar(sliderX, 1300.0, sliderWidth, 50, 1);
   // this grabs the profile picture of the user from the web and masks it.
   String url = "http://graph.facebook.com/"+username+"/picture?width=200&height=200";
   img = loadImage(url, "jpg");
@@ -36,8 +35,6 @@ void draw() {
   scale(0.5);
   translate(width/2, height/2);
   Date date = new Date ();
-  float sliderRatio = float(sliderWidth)/messages.size();
-  curr = (int) MAth.round(Math.abs(float(sliderX) - slider.getPos())*sliderRatio);
 
   if (curr < messages.size()) {
     Message m = messages.get(curr);
@@ -46,10 +43,12 @@ void draw() {
     Node author = friends.get(m.author);
     if (author != null) {
       author.sentMessage(curr);
+      if (max_author == null || author.messages > max_author.messages)
+        max_author = author;
     } else {
       print("Error with: " + m.author);
     }
-     slider.increment();
+     curr++;
   }
   drawUser(200);
   drawFriendRings(300, 500, 700);
@@ -57,18 +56,16 @@ void draw() {
 
   fill(100, 100, 100, 255);
   textSize(38);
-  
+  textAlign(CENTER);
   text(formatter.format(date), width / 2 + 700, height / 2 + 600);
-  text("Messages: " + curr + "/" + messages.size(), width / 2 + 700, height / 2 + 700);
-    slider.update();
-
-  slider.display();
+  int percent = (int)(100*float(curr)/messages.size());
+  text("Messages: " + curr + "/" + messages.size() + " ("+ percent + "%)", width / 2 + 700, height / 2 + 700);
 }
 
 void drawUser(int imgSize) {
-    tint(255,255);
+  tint(255,255);
   image(img, width/2 - imgSize/2, height/2 - imgSize/2);
-  stroke(255);
+  stroke(100);
   strokeWeight(7);
   fill(0, 0);
   ellipse(width / 2, height / 2, imgSize, imgSize);
@@ -101,7 +98,7 @@ void drawNodes(float r, HashMap<String, Integer> mCounts) {
     float freq;
     Object count = mCounts.get(node.id);
     if (count != null) {
-      freq = float((Integer) count) / 30;
+      freq = float((Integer) count) / getMaxCount(mCounts);
     } else {
       freq = 0.0;
     }
@@ -124,7 +121,19 @@ HashMap<String, Integer> countMessages(int timestart, int timeend) {
     }
   }
   return hm;
-}   
+}
+
+int getMaxCount(HashMap<String, Integer> hm) {
+  Iterator i = hm.entrySet().iterator();
+  int max_count = 1;
+  while(i.hasNext()) {
+    Integer count = (Integer) ((Map.Entry) i.next()).getValue();
+    if (count > max_count) {
+      max_count = count;
+    }
+  }
+  return max_count;
+}
 
 void loadMessages() {
   String[] lines = loadStrings("fbmessages.csv");
@@ -144,4 +153,5 @@ void loadMessages() {
     j++;
   }
 }
+
 
